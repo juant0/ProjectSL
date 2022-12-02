@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -13,19 +12,24 @@ public class PlayerController : MonoBehaviour
 
     private Transform model;
 
-    private Rigidbody rb;
+    private RigibodyHandler rigibodyHandler;
     private Vector3 movementDirection;
     private Camera mainCamera;
 
     private GroundHandler groundHandler;
+    private bool canJumpn = true;
+
+    private JeckPackHandle jeckPackHandle;
 
     private void Awake()
     {
-        InitilizeInputActions();
-        rb = GetComponent<Rigidbody>();
+        rigibodyHandler = GetComponent<RigibodyHandler>();
         mainCamera = Camera.main;
         model = transform.GetChild(0);
         groundHandler = GetComponent<GroundHandler>();
+        jeckPackHandle = GetComponent<JeckPackHandle>();
+        InitilizeInputActions();
+
     }
 
     private void OnEnable()
@@ -41,14 +45,10 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         movementDirection = GetMovementDirection();
+        rigibodyHandler.ForceDirection += movementDirection * speed * Time.deltaTime;
         Vector3 rotateDirection = GetRotationDirection();
         model.transform.Rotate(rotateDirection, speed, Space.World);
     }
-    private void FixedUpdate()
-    {
-        Move();
-    }
-
     private Vector3 GetMovementDirection()
     {
         Vector3 movementDirection = mainCamera.transform.forward * movementActions.Move.ReadValue<Vector2>().y + mainCamera.transform.right * movementActions.Move.ReadValue<Vector2>().x;
@@ -57,34 +57,36 @@ public class PlayerController : MonoBehaviour
     }
     private Vector3 GetRotationDirection() => Vector3.right * movementDirection.z - Vector3.forward * movementDirection.x;
 
-    private void Move()
-    {
-        Vector3 rigibodyVelocity = rb.velocity;
-        rigibodyVelocity.y = 0;
-        rb.AddForce(movementDirection * speed - rigibodyVelocity, ForceMode.VelocityChange);
-    }
-
     private void InitilizeInputActions()
     {
         inputActions = new PlayerInputActions();
         movementActions = inputActions.Movement;
         movementActions.Jump.performed += context => Jump();
+        movementActions.JeckPack.started += context => jeckPackHandle.StartBoost();
+        movementActions.JeckPack.canceled += context => jeckPackHandle.StopBoost();
     }
 
     private void Jump()
     {
-        if (!groundHandler.OnGround)
+        if (!groundHandler.OnGround  || !canJumpn)
             return;
+        canJumpn = false;
         StartCoroutine(Jumping());
+        StartCoroutine(ActiveAfterFrame());
         Debug.Log("jujmps");
     }
 
     private IEnumerator Jumping() {
         float startHeight = transform.position.y;
-        movementDirection.y += jumpSpeed;
         while ( transform.position.y <= startHeight + jumpHeight) {
-            movementDirection.y += jumpSpeed * Time.deltaTime;
+            rigibodyHandler.ForceDirection.y += jumpSpeed * Time.deltaTime;
             yield return null;
         }
+    }
+
+    private IEnumerator ActiveAfterFrame()
+    { 
+        yield return new WaitForSeconds(0.5f);
+        canJumpn = true;
     }
 }
