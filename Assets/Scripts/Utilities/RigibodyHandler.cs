@@ -2,18 +2,23 @@ using UnityEngine;
 
 public class RigibodyHandler : MonoBehaviour
 {
-    private Rigidbody rb;
+    public Rigidbody Rb {get; private set;}
     [HideInInspector]public Vector3 ForceDirection = Vector3.zero;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        Rb = GetComponent<Rigidbody>();
     }
-    public void FixedUpdate()
+    public void Update()
     {
-        Vector3 rbVelocity = rb.velocity;
-        rbVelocity.y = 0;
-        rb.AddForce(10 * ForceDirection - rbVelocity, ForceMode.VelocityChange);
+        if (ForceDirection == Vector3.zero)
+            return;
+        Vector3 rbVelocity = Rb.velocity;
+        if(ForceDirection.y == 0)
+            rbVelocity.y = 0;
+        Rb.AddForce(10 * ForceDirection - rbVelocity, ForceMode.VelocityChange);
         ForceDirection = Vector3.zero;
     }
+
+    public void SetRigiBodyVelocity(Vector3 newRbVelocity) => Rb.velocity = newRbVelocity;
 }

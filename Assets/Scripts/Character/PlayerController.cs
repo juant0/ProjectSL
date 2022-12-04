@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     private bool canJumpn = true;
 
     private JeckPackHandle jeckPackHandle;
+    private StickHandle stickHandle;
 
     private void Awake()
     {
@@ -28,6 +29,7 @@ public class PlayerController : MonoBehaviour
         model = transform.GetChild(0);
         groundHandler = GetComponent<GroundHandler>();
         jeckPackHandle = GetComponent<JeckPackHandle>();
+        stickHandle = GetComponent<StickHandle>();
         InitilizeInputActions();
 
     }
@@ -45,41 +47,51 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         movementDirection = GetMovementDirection();
+        Rotate();
+        if (stickHandle.IsStick && !groundHandler.OnGround)
+            return;
         rigibodyHandler.ForceDirection += movementDirection * speed * Time.deltaTime;
+    }
+
+    private void Rotate()
+    {
         Vector3 rotateDirection = GetRotationDirection();
         model.transform.Rotate(rotateDirection, speed, Space.World);
     }
+
     private Vector3 GetMovementDirection()
     {
         Vector3 movementDirection = mainCamera.transform.forward * movementActions.Move.ReadValue<Vector2>().y + mainCamera.transform.right * movementActions.Move.ReadValue<Vector2>().x;
         movementDirection.y = 0;
         return movementDirection;
     }
-    private Vector3 GetRotationDirection() => Vector3.right * movementDirection.z - Vector3.forward * movementDirection.x;
+    private Vector3 GetRotationDirection() => Vector3.right * rigibodyHandler.Rb.velocity.z - Vector3.forward * rigibodyHandler.Rb.velocity.x;
 
     private void InitilizeInputActions()
     {
         inputActions = new PlayerInputActions();
         movementActions = inputActions.Movement;
         movementActions.Jump.performed += context => Jump();
+        movementActions.Jump.performed += context => stickHandle.JumpStick();
         movementActions.JeckPack.started += context => jeckPackHandle.StartBoost();
         movementActions.JeckPack.canceled += context => jeckPackHandle.StopBoost();
     }
 
     private void Jump()
     {
+        Debug.Log("jujmps");
+
         if (!groundHandler.OnGround  || !canJumpn)
             return;
         canJumpn = false;
         StartCoroutine(Jumping());
         StartCoroutine(ActiveAfterFrame());
-        Debug.Log("jujmps");
     }
 
     private IEnumerator Jumping() {
         float startHeight = transform.position.y;
-        while ( transform.position.y <= startHeight + jumpHeight) {
-            rigibodyHandler.ForceDirection.y += jumpSpeed * Time.deltaTime;
+        while ( transform.position.y <= startHeight + jumpHeight && !stickHandle.IsStick) {
+            rigibodyHandler.ForceDirection.y += jumpSpeed * 2* Time.deltaTime;
             yield return null;
         }
     }

@@ -6,7 +6,7 @@ public class GroundHandler : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float collideRadius = 0.5f;
     [SerializeField] private float rayCastDistance = 0.5f;
-    public  bool OnGround { get; private set; }
+    [field:SerializeField] public  bool OnGround { get; private set; }
     private void FixedUpdate()
     {
         SetIsOnGround(); 
