@@ -36,7 +36,6 @@ public class StickHandle : MonoBehaviour
         contactlDirection.y = 0;
         contactlDirection.Normalize();
         rigibodyHandler.SetRigiBodyVelocity(Vector3.zero);
-        Debug.Log("Enter");
     }
 
     private void OnCollisionExit(Collision collision)
@@ -44,7 +43,6 @@ public class StickHandle : MonoBehaviour
         if (!LayerUtilities.IsSameLayer(stickLayer, collision.gameObject.layer))
             return;
         IsStick = false;
-        Debug.Log("Exit");
     }
     private void Update()
     {
@@ -75,9 +73,15 @@ public class StickHandle : MonoBehaviour
     {
         Vector3 startPosition = transform.position;
         rigibodyHandler.SetRigiBodyVelocity(Vector3.zero);
-        while (Vector3.Distance(transform.position,startPosition) <= jumpDistance || IsStick) 
+        float lerpTime = 0;
+        float distance = Vector3.Distance(transform.position, startPosition);
+        direction *= jumpSpeed;
+        while (distance < jumpDistance && !IsStick && !groundHandler.OnGround) 
         {
-            rigibodyHandler.ForceDirection += direction * jumpSpeed * 2 * Time.deltaTime;
+            distance = Vector3.Distance(transform.position, startPosition);
+            lerpTime = distance / jumpDistance;
+            Debug.Log(lerpTime);
+            rigibodyHandler.ForceDirection += Vector3.Lerp(direction, direction * 0.5f, lerpTime) * 2;
             yield return null;
         }
         isJumpingStick = false;

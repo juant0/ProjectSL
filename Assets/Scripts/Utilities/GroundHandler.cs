@@ -9,11 +9,6 @@ public class GroundHandler : MonoBehaviour
     [field:SerializeField] public  bool OnGround { get; private set; }
     private void FixedUpdate()
     {
-        SetIsOnGround(); 
-    }
-
-    private void SetIsOnGround()
-    {
-        OnGround = Physics.SphereCast(transformOrigin.position , collideRadius, Vector3.down, out RaycastHit hit, rayCastDistance );
+        OnGround = Physics.SphereCast(transformOrigin.position, collideRadius, Vector3.down, out RaycastHit hit, rayCastDistance);
     }
 }

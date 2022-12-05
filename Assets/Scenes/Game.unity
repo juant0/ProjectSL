@@ -158,8 +158,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d541b49ea3d72fc4f939e820c9c2c1d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 12
-  jumpSpeed: 23
+  speed: 8
+  jumpSpeed: 10
   jumpHeight: 2
 --- !u!135 &55062123
 SphereCollider:
@@ -253,7 +253,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rechargeRate: 1
   <FuelAmount>k__BackingField: 5
-  boostStrength: 3
+  boostStrength: 1
 --- !u!114 &55062129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -266,13 +266,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 773c6a125b3ded54f93d3fd0d5ea0455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stickStrength: 0.9
+  stickStrength: 1
   reduceStrenghtRate: 0.3
   stickLayer:
     serializedVersion: 2
     m_Bits: 128
-  jumpSpeed: 40
-  jumpDistance: 5
+  jumpSpeed: 10
+  jumpDistance: 10
   IsStick: 0
   currentStickStrength: 0
 --- !u!1 &99199273

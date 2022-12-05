@@ -49,12 +49,12 @@ public class JeckPackHandle : MonoBehaviour
     {
         if (!isBoosting || currentFuel <= 0)
             return;
-        rigibodyHandler.ForceDirection += Vector3.up * boostStrength * Time.deltaTime;
+        rigibodyHandler.ForceDirection += Vector3.up * boostStrength;
         SetBoost(-Time.deltaTime);
     }
     public void StartBoost()
     {
-        if (/*groundHandler.OnGround ||*/ currentFuel == 0)
+        if (currentFuel == 0)
             return;
         isBoosting = true;
     }

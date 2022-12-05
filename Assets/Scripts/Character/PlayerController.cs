@@ -50,13 +50,15 @@ public class PlayerController : MonoBehaviour
         Rotate();
         if (stickHandle.IsStick && !groundHandler.OnGround)
             return;
-        rigibodyHandler.ForceDirection += movementDirection * speed * Time.deltaTime;
+        rigibodyHandler.ForceDirection += movementDirection * speed ;
     }
 
     private void Rotate()
     {
         Vector3 rotateDirection = GetRotationDirection();
-        model.transform.Rotate(rotateDirection, speed, Space.World);
+        Vector3 rbVelocity = rigibodyHandler.Rb.velocity;
+        rbVelocity.y = 0;
+        model.transform.Rotate(rotateDirection, rbVelocity.magnitude, Space.World);
     }
 
     private Vector3 GetMovementDirection()
@@ -79,10 +81,9 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-        Debug.Log("jujmps");
-
         if (!groundHandler.OnGround  || !canJumpn)
             return;
+        Debug.Log("jujmps");
         canJumpn = false;
         StartCoroutine(Jumping());
         StartCoroutine(ActiveAfterFrame());
@@ -90,10 +91,13 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator Jumping() {
         float startHeight = transform.position.y;
-        while ( transform.position.y <= startHeight + jumpHeight && !stickHandle.IsStick) {
-            rigibodyHandler.ForceDirection.y += jumpSpeed * 2* Time.deltaTime;
+        float lerpTime = 0;
+        while ( transform.position.y < startHeight + jumpHeight && !stickHandle.IsStick) {
+            lerpTime = transform.position.y - startHeight / jumpHeight;
+            rigibodyHandler.ForceDirection.y += Mathf.Lerp(jumpSpeed, jumpSpeed * 0.5f, lerpTime) * 2;         
             yield return null;
         }
+        Debug.Log(transform.position.y - startHeight);
     }
 
     private IEnumerator ActiveAfterFrame()
