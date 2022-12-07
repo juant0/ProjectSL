@@ -20,18 +20,21 @@ public class RigidbodyHandler : MonoBehaviour
     private void AddForce()
     {
         AddGravityForce();
-        Rb.AddForce((ForceDirection - Rb.velocity ) * Time.deltaTime, ForceMode.VelocityChange);
+        Rb.AddForce((ForceDirection - Rb.velocity * 0.9f ) * Time.deltaTime, ForceMode.VelocityChange);
     }
 
     private void AddGravityForce()
     {
-        if (ForceDirection.y == 0 && !GroundHandler.OnGround)
+        if (ForceDirection.y != 0)
         {
-            ForceDirection += Physics.gravity * fallingTimer;
-            fallingTimer += Time.deltaTime;
+            fallingTimer = 1;
+            return;
         }
+        ForceDirection += Physics.gravity * fallingTimer;
+        if (!GroundHandler.OnGround)
+            fallingTimer += Time.deltaTime;
         else
-            fallingTimer = 0;
+            fallingTimer = 1;
     }
 
     public void SetRigidBodyVelocity(Vector3 newRbVelocity) => Rb.velocity = newRbVelocity;
