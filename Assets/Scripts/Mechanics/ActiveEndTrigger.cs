@@ -6,6 +6,7 @@ public class ActiveEndTrigger : MonoBehaviour
 {
     [SerializeField] private GameObject Text;
     [SerializeField] private ParticleSystem effect;
+    [Tooltip("Layer that the player is assigned")]
     [SerializeField] private LayerMask playerLayer;
     private void Awake()
     {

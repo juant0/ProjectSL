@@ -3,16 +3,16 @@ using UnityEngine;
 
 public class JetPackHandle : MonoBehaviour
 {
-    [Header("Jeckpack Settings")]
-    [Tooltip("Every x time the boost recharge when the player is on the ground")]
+    [Header("Jetpack Settings")]
+    [Tooltip("Every x time the fuel recharge when the player is on the ground")]
     [SerializeField] private float rechargeRate;
-    [Tooltip("Jetpack works with amount a fuel that it's reducing every frame when you are using and it's recharge when the player is on the ground ")]
+    [Tooltip("Jetpack works with amount a fuel that it's reducing every frame when you are using jetpack and fuel recharge when the player is on the ground")]
     [field: SerializeField] public int FuelAmount { get; private set; }
     [Tooltip("Upware force aplied on the player  ")]
     [SerializeField] private float boostStrength;
 
     [Header("Effects")]
-    [Tooltip("Particle system effect that it's played when it is ussing the jeckpack")]
+    [Tooltip("Particle system effect that it's played when it is ussing the jetpack")]
     [SerializeField] private ParticleSystem effectTrailRender;
 
 

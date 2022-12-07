@@ -17,7 +17,6 @@ public class PlayerController : MonoBehaviour
     private Camera mainCamera;
 
     private GroundHandler groundHandler;
-    private bool canJumpn = true;
 
     private JetPackHandle jeckPackHandle;
     private StickHandle stickHandle;
@@ -86,11 +85,9 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-        if (!groundHandler.OnGround  || !canJumpn)
+        if (!groundHandler.OnGround )
             return;
-        canJumpn = false;
         StartCoroutine(Jumping());
-        StartCoroutine(ActiveAfterFrame());
     }
 
     private IEnumerator Jumping() {
@@ -101,13 +98,5 @@ public class PlayerController : MonoBehaviour
             rigibodyHandler.ForceDirection.y += Mathf.Lerp(jumpSpeed, jumpSpeed * 0.5f, lerpTime) * 2;         
             yield return null;
         }
-    }
-    /// <summary>
-    ///  Coroutine use for avoid little spam call of jump 
-    /// </summary>
-    private IEnumerator ActiveAfterFrame()
-    { 
-        yield return new WaitForSeconds(0.5f);
-        canJumpn = true;
     }
 }

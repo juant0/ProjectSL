@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class TriggerDoor : MonoBehaviour
 {
+    [Tooltip("Object to hide")]
     [SerializeField] private GameObject door;
+    [Tooltip("Layer that the player is assigned")]
     [SerializeField] private LayerMask playerLayer;
     private void Awake()
     {

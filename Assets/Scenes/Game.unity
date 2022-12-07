@@ -255,7 +255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d541b49ea3d72fc4f939e820c9c2c1d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  speed: 8
   jumpSpeed: 12
   jumpHeight: 2.5
 --- !u!135 &55062123
@@ -295,7 +295,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 55062121}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.6, y: -0.9, z: -22.171}
+  m_LocalPosition: {x: -7.6, y: 2.104, z: -22.171}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -321,8 +321,9 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  collideRadius: 0.4999
-  rayCastDistance: 0.5
+  collideRadius: 0.49
+  rayCastDistance: 0.01
+  <OnGround>k__BackingField: 0
 --- !u!114 &55062127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11578,6 +11579,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a4c55efa64b3ab46bf72d499776f42f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &1274252829
 GameObject:
   m_ObjectHideFlags: 0
