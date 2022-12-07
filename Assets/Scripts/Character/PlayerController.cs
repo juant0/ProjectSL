@@ -5,30 +5,30 @@ public class PlayerController : MonoBehaviour
 {
     private PlayerInputActions inputActions;
     private PlayerInputActions.MovementActions movementActions;
-
+    [Header("Movement")]
     [SerializeField] private float speed = 5;
     [SerializeField] private float jumpSpeed = 5;
     [SerializeField] private float jumpHeight = 5;
 
     private Transform model;
 
-    private RigibodyHandler rigibodyHandler;
+    private RigidbodyHandler rigibodyHandler;
     private Vector3 movementDirection;
     private Camera mainCamera;
 
     private GroundHandler groundHandler;
     private bool canJumpn = true;
 
-    private JeckPackHandle jeckPackHandle;
+    private JetPackHandle jeckPackHandle;
     private StickHandle stickHandle;
 
     private void Awake()
     {
-        rigibodyHandler = GetComponent<RigibodyHandler>();
+        rigibodyHandler = GetComponent<RigidbodyHandler>();
         mainCamera = Camera.main;
         model = transform.GetChild(0);
         groundHandler = GetComponent<GroundHandler>();
-        jeckPackHandle = GetComponent<JeckPackHandle>();
+        jeckPackHandle = GetComponent<JetPackHandle>();
         stickHandle = GetComponent<StickHandle>();
         InitilizeInputActions();
 
@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
         Vector3 rotateDirection = GetRotationDirection();
         Vector3 rbVelocity = rigibodyHandler.Rb.velocity;
         rbVelocity.y = 0;
-        model.transform.Rotate(rotateDirection, rbVelocity.magnitude, Space.World);
+        model.transform.Rotate(rotateDirection, rbVelocity.magnitude * speed * 10 * Time.deltaTime, Space.World);
     }
 
     private Vector3 GetMovementDirection()
@@ -69,6 +69,11 @@ public class PlayerController : MonoBehaviour
     }
     private Vector3 GetRotationDirection() => Vector3.right * rigibodyHandler.Rb.velocity.z - Vector3.forward * rigibodyHandler.Rb.velocity.x;
 
+
+    /// <summary>
+    ///  Initialize the InputSystem and assigns the respective functions to each input
+    ///  To know what are the keys or change the keys you should go => Assets/InputAction/PlayerInputActions
+    /// </summary>
     private void InitilizeInputActions()
     {
         inputActions = new PlayerInputActions();
@@ -83,7 +88,6 @@ public class PlayerController : MonoBehaviour
     {
         if (!groundHandler.OnGround  || !canJumpn)
             return;
-        Debug.Log("jujmps");
         canJumpn = false;
         StartCoroutine(Jumping());
         StartCoroutine(ActiveAfterFrame());
@@ -97,9 +101,10 @@ public class PlayerController : MonoBehaviour
             rigibodyHandler.ForceDirection.y += Mathf.Lerp(jumpSpeed, jumpSpeed * 0.5f, lerpTime) * 2;         
             yield return null;
         }
-        Debug.Log(transform.position.y - startHeight);
     }
-
+    /// <summary>
+    ///  Coroutine use for avoid little spam call of jump 
+    /// </summary>
     private IEnumerator ActiveAfterFrame()
     { 
         yield return new WaitForSeconds(0.5f);

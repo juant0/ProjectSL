@@ -5,7 +5,7 @@ public class JeckPackBoostUi : MonoBehaviour
 {
     [SerializeField] private Image fillImageBoost;
     [SerializeField] private Text TextBoost;
-    [SerializeField] private JeckPackHandle jeckPackHandle;
+    [SerializeField] private JetPackHandle jeckPackHandle;
     private void Awake()
     {
         jeckPackHandle.OnPlayerFuelChange += UpdateBoostUI;

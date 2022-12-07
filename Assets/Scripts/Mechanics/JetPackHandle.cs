@@ -1,17 +1,26 @@
 using System;
 using UnityEngine;
 
-public class JeckPackHandle : MonoBehaviour
+public class JetPackHandle : MonoBehaviour
 {
+    [Header("Jeckpack Settings")]
+    [Tooltip("Every x time the boost recharge when the player is on the ground")]
     [SerializeField] private float rechargeRate;
+    [Tooltip("Jetpack works with amount a fuel that it's reducing every frame when you are using and it's recharge when the player is on the ground ")]
     [field: SerializeField] public int FuelAmount { get; private set; }
+    [Tooltip("Upware force aplied on the player  ")]
     [SerializeField] private float boostStrength;
+
+    [Header("Effects")]
+    [Tooltip("Particle system effect that it's played when it is ussing the jeckpack")]
+    [SerializeField] private ParticleSystem effectTrailRender;
+
 
     private float currentFuel = 0;
 
     private GroundHandler groundHandler;
 
-    private RigibodyHandler rigibodyHandler;
+    private RigidbodyHandler rigibodyHandler;
 
     public delegate void OnPlayerFloatChanged(float floatToChange);
     public OnPlayerFloatChanged OnPlayerFuelChange;
@@ -22,18 +31,18 @@ public class JeckPackHandle : MonoBehaviour
     private void Awake()
     {
         groundHandler = GetComponent<GroundHandler>();
-        rigibodyHandler = GetComponent<RigibodyHandler>();
-        SetBoost(FuelAmount);
+        rigibodyHandler = GetComponent<RigidbodyHandler>();
+        SetFuel(FuelAmount);
+        effectTrailRender.Stop();
     }
 
     void Update()
     {
-        BoostHandle();
+        FuelHandle();
         if (isBoosting)
             Boost();
     }
-
-    private void BoostHandle()
+    private void FuelHandle()
     {
         if (!groundHandler.OnGround || isBoosting)
             return;
@@ -41,26 +50,30 @@ public class JeckPackHandle : MonoBehaviour
         if (timer > rechargeRate)
         {
             timer = 0;
-            SetBoost(1);
+            SetFuel(1);
         }
     }
-
     private void Boost()
     {
         if (!isBoosting || currentFuel <= 0)
             return;
         rigibodyHandler.ForceDirection += Vector3.up * boostStrength;
-        SetBoost(-Time.deltaTime);
+        SetFuel(-Time.deltaTime);
     }
     public void StartBoost()
     {
         if (currentFuel == 0)
             return;
         isBoosting = true;
+        effectTrailRender.Play();
     }
 
-    public void StopBoost() => isBoosting = false;
-    private void SetBoost(float boostAmount) 
+    public void StopBoost()
+    {
+        isBoosting = false;
+        effectTrailRender.Stop();
+    }
+    private void SetFuel(float boostAmount) 
     {
         currentFuel = Math.Clamp(currentFuel + boostAmount, 0, FuelAmount);
         if(currentFuel == 0)
